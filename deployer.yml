@@ -42,10 +42,8 @@
       recurse: yes
       owner: ubuntu
       group: ubuntu
-  - name: This command will change the working directory to somedir/ and will only run when somedir/somelog.txt doesn't exist.
+  - name: This command will disable strictHostKeyChecking 
     shell: echo "Host *\n    StrictHostKeyChecking no\n    UserKnownHostsFile /dev/null\n" >> /home/ubuntu/.ssh/config
     args:
       chdir: /home/ubuntu
       creates: somelog.txt
-  - name: Flush handlers
-    meta: flush_handlers
