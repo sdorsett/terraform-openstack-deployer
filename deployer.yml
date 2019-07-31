@@ -1,0 +1,51 @@
+---
+# file: roles/common/tasks/main.yml
+- hosts: kubernetes-deployer
+  remote_user: ubuntu
+  become: true
+  become_user: root
+  vars:
+    ansible_ssh_private_key_file: "~/.ssh/id_rsa-project-kubernetes"
+  tasks:
+
+  - name: Install aptitude and unzip packages 
+    apt:
+      name: "{{ packages }}"
+      state: present
+      update_cache: true
+    vars:
+      packages:
+      - aptitude
+      - unzip 
+      - ansible
+      - python-openstackclient
+  - name: Unarchive a file that needs to be downloaded (added in 2.0)
+    unarchive:
+      src: https://releases.hashicorp.com/terraform/0.12.5/terraform_0.12.5_linux_amd64.zip
+      dest: /usr/local/bin/
+      remote_src: yes
+  - name: Copy openrc.sh to /home/ubuntu/
+    copy:
+      src: ./openrc.sh
+      dest: /home/ubuntu/openrc.sh
+      owner: ubuntu
+      group: ubuntu
+      mode: '0600'
+  - name: clone repo
+    git:
+      repo: 'https://sdorsett@github.com/sdorsett/terraform-openstack-base-project-k8s.git'
+      dest: /home/ubuntu/terraform-openstack-base-project-k8s
+  - name: Change file ownership, group and permissions
+    file:
+      path: /home/ubuntu/terraform-openstack-base-project-k8s
+      state: directory
+      recurse: yes
+      owner: ubuntu
+      group: ubuntu
+  - name: This command will change the working directory to somedir/ and will only run when somedir/somelog.txt doesn't exist.
+    shell: echo "Host *\n    StrictHostKeyChecking no\n    UserKnownHostsFile /dev/null\n" >> /home/ubuntu/.ssh/config
+    args:
+      chdir: /home/ubuntu
+      creates: somelog.txt
+  - name: Flush handlers
+    meta: flush_handlers

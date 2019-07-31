@@ -1,0 +1,4 @@
+---
+# file: site.yml
+- import_playbook: deployer.yml
+- import_playbook: localhost.yml

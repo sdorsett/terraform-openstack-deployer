@@ -1,0 +1,5 @@
+.terraform/
+openrc.sh
+terraform.tfstate
+terraform.tfstate.backup
+terraform_repositories/*
