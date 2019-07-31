@@ -46,4 +46,9 @@
     shell: echo "Host *\n    StrictHostKeyChecking no\n    UserKnownHostsFile /dev/null\n" >> /home/ubuntu/.ssh/config
     args:
       chdir: /home/ubuntu
-      creates: somelog.txt
+      creates: /home/ubuntu/.ssh/config
+  - name: Add /etc/ansible/openstack.yml
+    shell: 'echo "ansible:\n  use_hostnames: True\n  expand_hostvars: True" >> /etc/ansible/openstack.yml'
+    args:
+      creates: /etc/ansible/openstack.yml
+
